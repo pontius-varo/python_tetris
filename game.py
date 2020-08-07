@@ -1,5 +1,7 @@
 import pygame
 import random
+import sys
+
 from pygame import mixer
 
 colors = [
@@ -131,30 +133,49 @@ pygame.init()
 pygame.font.init()
 
 #Add theme music
-mixer.music.load("tetris_theme.wav")
+music = open('./lib/tetris_theme.wav')
+mixer.music.load(music)
 mixer.music.play(-1)
+
+#Title 
+pygame.display.set_caption("PyTetris")
+
+#Add a background
+blc = open("./lib/background1.png")
+background = pygame.image.load(blc)
+
+#Add an icon for the program
+ico = open("./lib/icon1.png")
+icon = pygame.image.load(ico)
+pygame.display.set_icon(icon)
 
 #define some colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 
+# Size of the Screen. Usually set to 400x500
 size = (400, 500)
 screen = pygame.display.set_mode(size)
-
-pygame.display.set_caption("Tetris")
 
 # Loop until the user clicks the close button.
 done = False
 clock = pygame.time.Clock()
 fps = 25
+#Initialization
 game = Tetris(20, 10)
+
 counter = 0
 
 pressing_down = False
 
 while not done:
-    
+   
+    # RGB = Red, Green Blue
+    screen.fill((0, 0, 0))
+    # Add background image
+    screen.blit(background,(0,0))
+ 
     if game.figure is None:
         game.new_figure()
     counter += 1
@@ -184,11 +205,12 @@ while not done:
             if event.key == pygame.K_DOWN:
                 pressing_down = False
 
-    screen.fill(WHITE)
+    
 
+    
     for i in range(game.height):
         for j in range(game.width):
-            pygame.draw.rect(screen, GRAY, [game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom], 1)
+            pygame.draw.rect(screen, BLACK, [game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom], 1)
             if game.field[i][j] > 0:
                 pygame.draw.rect(screen, colors [game.field[i][j]],
                         [game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom -1])
@@ -206,7 +228,7 @@ while not done:
     font = pygame.font.SysFont('Arial', 25, True, False)
     font1 = pygame.font.SysFont('Arial', 65, True, False)
     text = font.render("Score: " + str(game.score), True, BLACK)
-    text_game_over = font1.render("Game Over : (", True, (255, 0, 0))
+    text_game_over = font1.render("Game Over", True, (255, 0, 0))
 
     screen.blit(text, [0, 0])
     if game.state == "gameover":
